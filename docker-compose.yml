@@ -1,0 +1,51 @@
+services:
+  api:
+    build: ./api
+    container_name: users_api
+    ports:
+      - "8000:8000"
+    networks:
+      - mvpnet
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+    environment:
+      RABBITMQ_HOST: rabbit
+      DATABASE_URL: postgresql://postgres:postgres@postgres_mvp_sprint_3:5432/appdb
+
+  worker:
+    build: ./worker
+    container_name: users_worker
+    networks:
+      - mvpnet
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    volumes:
+      - ./worker:/app
+    environment:
+      RABBITMQ_HOST: rabbit
+      DATABASE_URL: postgresql://postgres:postgres@postgres_mvp_sprint_3:5432/appdb
+
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - mvpnet
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+networks:
+  mvpnet:
+    external: true
