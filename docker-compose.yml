@@ -1,51 +1,33 @@
+version: '3.8'
 services:
-  api:
-    build: ./api
-    container_name: users_api
+  users-postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass
+      POSTGRES_DB: usersdb
     ports:
-      - "8000:8000"
+      - "5433:5432"
+    volumes:
+      - pgdata_users:/var/lib/postgresql/data
     networks:
       - mvpnet
-    depends_on:
-      rabbit:
-        condition: service_healthy
-    volumes:
-      - ./api:/app
-    environment:
-      RABBITMQ_HOST: rabbit
-      DATABASE_URL: postgresql://postgres:postgres@postgres_mvp_sprint_3:5432/appdb
 
-  worker:
-    build: ./worker
-    container_name: users_worker
-    networks:
-      - mvpnet
-    depends_on:
-      rabbit:
-        condition: service_healthy
-    volumes:
-      - ./worker:/app
-    environment:
-      RABBITMQ_HOST: rabbit
-      DATABASE_URL: postgresql://postgres:postgres@postgres_mvp_sprint_3:5432/appdb
 
-  rabbit:
-    image: rabbitmq:3-management
-    container_name: rabbit
+  users-api:
+    build: .
+    env_file: .env
+    depends_on:
+      - users-postgres
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "8001:8001"
     networks:
       - mvpnet
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
+
+
+volumes:
+  pgdata_users:
 
 networks:
   mvpnet:
-    external: true
+    driver: bridge
