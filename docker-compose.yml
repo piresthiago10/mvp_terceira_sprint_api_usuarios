@@ -30,4 +30,4 @@ volumes:
 
 networks:
   mvpnet:
-    driver: bridge
+    external: true
