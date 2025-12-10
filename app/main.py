@@ -4,7 +4,6 @@ from .database import Base, engine
 from .schema_graphql import schema
 
 
-# cria tabelas
 Base.metadata.create_all(bind=engine)
 
 

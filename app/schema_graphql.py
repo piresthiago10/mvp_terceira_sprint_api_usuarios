@@ -136,6 +136,36 @@ class Mutation:
             return user_to_graphql(user)
         finally:
             db.close()
+            
+
+    @strawberry.mutation
+    def update_user(self, id: int, nome: str, email: str) -> User:
+        db = SessionLocal()
+        try:
+            user = db.query(UserModel).filter(UserModel.id == id).first()
+            user.nome = nome
+            user.email = email
+            db.commit()
+            db.refresh(user)
+
+            return user_to_graphql(user)
+        finally:
+            db.close()
+
+    @strawberry.mutation
+    def delete_user(self, id: int) -> User:
+        db = SessionLocal()
+        try:
+            user = db.query(UserModel).filter(UserModel.id == id).first()
+
+            if not user:
+                raise Exception("Usuário não encontrado")
+
+            db.delete(user)
+            db.commit()
+            return user_to_graphql(user)
+        finally:
+            db.close()
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

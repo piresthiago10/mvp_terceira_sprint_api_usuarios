@@ -9,14 +9,23 @@ class User(Base):
     nome = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False, index=True)
 
-    address = relationship("Address", back_populates="user", uselist=False)
-
+    address = relationship(
+        "Address",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
 class Address(Base):
     __tablename__ = "addresses"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
 
     cep = Column(String, nullable=False)
     logradouro = Column(String, nullable=False)
@@ -25,3 +34,4 @@ class Address(Base):
     cidade = Column(String, nullable=False)
 
     user = relationship("User", back_populates="address")
+
