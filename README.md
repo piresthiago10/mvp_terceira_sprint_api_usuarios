@@ -5,6 +5,7 @@ Api que concentra usuários e seus respectivos endereços.
 ## Tecnologias utiliadas:
 
 - Python
+- FastApi
 - Graphql
 - Postgres
 - Docker
@@ -31,7 +32,7 @@ docker compose up --build
 
 ## Exemplos de uso da API GraphQL
 
-Acessar o endpoint http://localhost:8001/graphql e inserir os payloads abaixo.
+Acessar a rota http://localhost:8001/graphql e inserir os payloads abaixo.
 
 #### Criar usuário com endereço
 
