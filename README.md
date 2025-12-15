@@ -102,8 +102,8 @@ query {
 mutation {
   updateUser(
     id: 1
-    nome: "Thiago Atualizado"
-    email: "thiago.novo@example.com"
+    nome: "Fulano Atualizado"
+    email: "fulano.novo@example.com"
   ) {
     id
     nome
@@ -112,25 +112,6 @@ mutation {
 }
 ```
 
-#### Atualizar dados do Endereço do Usuário
-
-```graphql
-mutation {
-  updateAddress(
-    userId: 1
-    cep: "22222222"
-    logradouro: "Rua Nova"
-    bairro: "Centro"
-    cidade: "Rio de Janeiro"
-    estado: "RJ"
-  ) {
-    cep
-    logradouro
-    cidade
-    estado
-  }
-}
-```
 #### Excluir Usuário
 
 ```graphql
